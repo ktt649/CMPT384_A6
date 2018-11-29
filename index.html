@@ -180,7 +180,7 @@
 		                    .text(function(d) {
 		                        return d.properties.name;
 		                });
-		                    
+
 		            //Plot Points
 		            plotPoints(g);
 				});
@@ -255,14 +255,18 @@
 
 
 				for (var i = 0; i < countryList.length; i++) {
+					var country = String(countryList[i]);
+
 				    var checkBox = document.createElement("input");
-				   // checkbox.id = countryList[i];
+				    checkBox.type = "checkbox";
+				    checkBox.value = countryList[i];
+				    checkBox.id = countryList[i] + "_Box";
+
 				    var checkDiv = document.createElement("div");
 				    checkDiv.className = "checkDiv";
 				    checkDiv.appendChild(checkBox);
+
 				    var label = document.createElement("label");
-				    checkBox.type = "checkbox";
-				    checkBox.value = countryList[i];
 				    checkDiv.appendChild(label);
 				    myDiv.appendChild(checkDiv);
 				    label.appendChild(document.createTextNode(countryList[i]));    
