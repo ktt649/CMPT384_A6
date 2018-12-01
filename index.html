@@ -118,7 +118,9 @@
 			//Datastructures
 			var w = 800;
 			var h = 600;
-			var bombData;
+			d3.csv("BombingData.csv").then(function(d){
+				bombData = d;
+			});
 			var mapData;
 			var countrySet = new Set();
 			var countryList = new Array();
@@ -183,6 +185,9 @@
 
 		            //Plot Points
 		            plotPoints(g);
+		            //Create Checkboxes for filtering
+					createCheckboxes(bombData);
+					d3.selectAll(".checkbox").on("change", update);
 				});
 				
 			}
@@ -190,16 +195,19 @@
 			function plotPoints(g){
 				//Load in the Bomb run data
 				nodes = d3.csv("BombingData.csv").then(function (data){	
-					bombData = data; 
-
-					//Create Checkboxes for filtering
-					createCheckboxes(bombData);
 					
 					
 					// Display Circle
-			        g.selectAll("circle")
-				        .data(bombData)
-				        .enter()
+			        var circles = g.selectAll("circle")
+				        .data(data)
+
+				    // EXIT - Circles that are no longer in the dataset
+			        circles
+			            .exit()
+			            .attr('r', 0)
+			            .remove();
+
+				    circles.enter()
 				        .append("circle")
 				        .attr("cx", function(d) {
 				            return projection([d.LONGITUDE, d.LATITUDE])[0];
@@ -208,7 +216,7 @@
 				            return projection([d.LONGITUDE, d.LATITUDE])[1];
 				        })
 				        .attr("r", function(d){
-				          	return 2;
+				        	return 2;  	
 				        })
 				        .style("fill", "Black")
 
@@ -233,6 +241,7 @@
 		                });		
 				});
 			}
+			
 
 			function createCheckboxes(bombData){
 				//Get array of countries for checkboxes
@@ -261,6 +270,8 @@
 				    checkBox.type = "checkbox";
 				    checkBox.value = countryList[i];
 				    checkBox.id = countryList[i] + "_Box";
+				    checkBox.className = "checkbox";
+				    checkBox.checked = true;
 
 				    var checkDiv = document.createElement("div");
 				    checkDiv.className = "checkDiv";
@@ -272,6 +283,28 @@
 				    label.appendChild(document.createTextNode(countryList[i]));    
 				}
 			}
+
+			function update(bombData){
+		        var choices = [];
+		        d3.selectAll(".checkbox").each(function(d){
+		          
+		          if(d.checked){
+		            choices.push(d.value);
+		          }
+		        });
+		      
+		        if(choices.length > 0){
+		          newData = [];
+		          for(var i = 0; i < bombData.length; i++){
+		          	if(choices.includes(bombData[i].COUNTRY)){
+		          		newData.push(bombData[i]);
+		          	}
+		          }
+		        } else {
+		          newData = bombData;     
+		        } 
+		       	plotPoints(newData); 
+      		}
 		
 		</script>
     </div>
