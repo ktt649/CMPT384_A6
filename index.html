@@ -118,6 +118,7 @@
 			//Datastructures
 			var w = 800;
 			var h = 600;
+			var bombData;
 			d3.csv("BombingData.csv").then(function(d){
 				bombData = d;
 			});
@@ -165,7 +166,7 @@
 					   .append("path")
 					   .attr("d", path)
 					   .attr("stroke", "rgba(8, 81, 156, 0.2)")
-					   .attr("fill", "rgba(8, 81, 156, 0.6)")
+					   .attr("fill", "rgba(2, 2, 2, 0.5)")//"rgba(8, 81, 156, 0.6)")
 					   .on('click', function(d){
 		                	console.log("TARGET: " + d.TGTCOUNTRY);
 		                	console.log("COUNTRY: " + d.COUNTRY);
@@ -175,16 +176,16 @@
 		                	d3.select(this).style("cursor", "pointer"); 
 		                	//d3.select(this).style("fill", "rgba(8, 81, 156, 0.2)");
 		                })
-		                .on('mouseout', function(d){
-		                	d3.select(this).style("fill", "rgba(8, 81, 156, 0.6)");
-		                })
+		               // .on('mouseout', function(d){
+		               // 	d3.select(this).style("fill", "rgba(8, 81, 156, 0.6)");
+		               // })
 				        .append('title')
 		                    .text(function(d) {
 		                        return d.properties.name;
 		                });
 
 		            //Plot Points
-		            plotPoints(g);
+		            plotPoints(bombData);
 		            //Create Checkboxes for filtering
 					createCheckboxes(bombData);
 					d3.selectAll(".checkbox").on("change", update);
@@ -192,18 +193,14 @@
 				
 			}
 			
-			function plotPoints(g){
-				//Load in the Bomb run data
-				nodes = d3.csv("BombingData.csv").then(function (data){	
-					
+			function plotPoints(data){	
 					
 					// Display Circle
-			        var circles = g.selectAll("circle")
+			        var circles = innerGraphicContainer.selectAll("circle")
 				        .data(data)
 
 				    // EXIT - Circles that are no longer in the dataset
-			        circles
-			            .exit()
+			        circles.exit()
 			            .attr('r', 0)
 			            .remove();
 
@@ -216,9 +213,23 @@
 				            return projection([d.LONGITUDE, d.LATITUDE])[1];
 				        })
 				        .attr("r", function(d){
-				        	return 2;  	
+				        	return 3;  	
 				        })
-				        .style("fill", "Black")
+				        .style("fill", function(d){
+				        	switch (d.COUNTRY) {
+							    case "UK":
+							        return "Red";
+							    case "USA":
+							        return "Blue";
+							    case "ITALY":
+							        return "Green";
+							    case "RAF":
+							        return "Black";
+							    default:
+							    	return "White";
+							}
+
+				        })
 
 				        //INTERACT WITH DATAPOINTS
 		                .on('click', function(d){
@@ -226,10 +237,25 @@
 		                	console.log("COUNTRY: " + d.COUNTRY);
 		                })
 		                .on('mouseover', function(d){
-		                	d3.select(this).style("fill", "Red");
+		                	d3.select(this).style("r", "10px");
 		                })
 		                .on('mouseout', function(d){
-		                	d3.select(this).style("fill", "Black");
+
+		                	d3.select(this).style("r", "3px")
+		                	.style("fill", function(d){
+					        	switch (d.COUNTRY) {
+								    case "UK":
+								        return "Red";
+								    case "USA":
+								        return "Blue";
+								    case "ITALY":
+								        return "Green";
+								    case "RAF":
+								        return "Black";
+								    default:
+								    	return "White";
+								}
+							})
 		                })
 				        .append('title').text(function(d) {
 		                    	if(d.WEAPONWEIGHT == 0){
@@ -239,7 +265,6 @@
 		                    	}
 		                        
 		                });		
-				});
 			}
 			
 
@@ -252,6 +277,8 @@
 					}
 				}
 
+				//France has no location data so is meaningless to the vis.
+				countrySet.delete("FRANCE");
 				countrySet.forEach(v => countryList.push(v));
 
 				var myDiv = document.getElementById("checkboxes");
@@ -284,24 +311,27 @@
 				}
 			}
 
-			function update(bombData){
+			function update(){
 		        var choices = [];
-		        d3.selectAll(".checkbox").each(function(d){
+		        let boxes = d3.selectAll(".checkbox")._groups;
+
+		        for(var i = 0; i < boxes[0].length; i++){
 		          
-		          if(d.checked){
-		            choices.push(d.value);
+		          if(boxes[0].item(i).checked){
+		            choices.push(boxes[0].item(i).value);
 		          }
-		        });
+		        }
 		      
 		        if(choices.length > 0){
-		          newData = [];
+		          var newData = new Array();
 		          for(var i = 0; i < bombData.length; i++){
 		          	if(choices.includes(bombData[i].COUNTRY)){
+		          		var d = bombData[i].COUNTRY;
 		          		newData.push(bombData[i]);
 		          	}
 		          }
 		        } else {
-		          newData = bombData;     
+		          newData = [];     
 		        } 
 		       	plotPoints(newData); 
       		}
