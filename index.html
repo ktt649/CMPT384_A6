@@ -192,8 +192,9 @@
 
 		            //Create Checkboxes for filtering
 					createCheckboxes(bombData);
-					// Plot points based on what boxes are checked
-					updatePoints();
+					// show all the points
+					plotPoints(bombData);
+					// attaching event handler to checkboxes
 					d3.selectAll(".checkbox").on("change", updatePoints);
 				});
 				
@@ -209,13 +210,14 @@
 			        var circles = innerGraphicContainer.selectAll("circle")
 				        .data(data)
 
-				    // EXIT - Circles that are no longer in the dataset
-			        circles.exit()
-			            .attr('r', 0)
-			            .remove();
+
 
 			        // ENTER - Create new cicles
 				    circles.enter()
+				    	.filter(function(d){
+				        	return (['UK','USA','ITALY','RAF'].indexOf(d.COUNTRY) > -1) && !!d.LONGITUDE && !!d.LATITUDE;
+
+				        })
 				        .append("circle")
 				        .attr("cx", function(d) {
 				            return projection([d.LONGITUDE, d.LATITUDE])[0];
@@ -228,6 +230,9 @@
 				        })
 				        .style("fill", function(d){
 				        	return colorPoints(d);
+				        })
+				        .attr('class',function(d){
+				        	return 'country-'+d.COUNTRY;
 				        })
 
 				        //INTERACT WITH DATAPOINTS
@@ -278,7 +283,7 @@
 				    case "RAF":
 				        return "Black";
 				    default:
-				    	return "White";
+				    	return "transparent";
 				}
 			}
 			
@@ -329,7 +334,7 @@
 				    checkBox.id = countryList[i] + "_Box";
 				    checkBox.className = "checkbox";
 				    // Default value when loading the page
-				    checkBox.checked = false;
+				    checkBox.checked = true;
 
 				    // Create div container for each checkbox
 				    var checkDiv = document.createElement("div");
@@ -347,42 +352,57 @@
 			/*
 				Function updates the dataset filtering based on which boxes are checked.
 			*/
-			function updatePoints(){
-		        var choices = [];
-		        let boxes = d3.selectAll(".checkbox")._groups;
+			function updatePoints(event){
+		        // var choices = [];
+		        // let boxes = d3.selectAll(".checkbox")._groups;
 
-	        	//"All" Checkbox
-		        if(boxes[0].item(0).checked){
-		        	for(var i = 1; i < boxes[0].length; i++){
-		        		boxes[0].item(i).checked = true;
-		        	}
-		        }
-		        boxes[0].item(0).checked = false;
+	        	// //"All" Checkbox
+		        // if(boxes[0].item(0).checked){
+		        // 	for(var i = 1; i < boxes[0].length; i++){
+		        // 		boxes[0].item(i).checked = true;
+		        // 	}
+		        // }
+		        // boxes[0].item(0).checked = false;
 
-		        //Add only the checked boxes to choices
-		        for(var i = 0; i < boxes[0].length; i++){		          
-		          if(boxes[0].item(i).checked){
-		            choices.push(boxes[0].item(i).value);
-		          }
-		        }
+		        // //Add only the checked boxes to choices
+		        // for(var i = 0; i < boxes[0].length; i++){		          
+		        //   if(boxes[0].item(i).checked){
+		        //     choices.push(boxes[0].item(i).value);
+		        //   }
+		        // }
 
+
+
+		        var countryName = d3.event.target.id.split("_")[0];
+
+		       if(countryName == 'All' && d3.event.target.checked){
+		       	//check all the checkboxes
+		       	d3.selectAll('.checkbox').property('checked',true);
+		       	d3.selectAll('circle').attr('r',3 );
+		       }
+		       else {
+		       	 d3.selectAll('circle.country-'+countryName).attr('r', d3.event.target.checked ? 3 : 0 );
+		       	 d3.select("#All_Box").property('checked',false);
+		       }
+
+		       
 
 		      
-		      	//Filter data based on which boxes are checked.
-		        if(choices.length > 0){
-		          var newData = new Array();
-		          for(var i = 0; i < bombData.length; i++){
-		          	if(choices.includes(bombData[i].COUNTRY)){
-		          		// d is just for debugging
-		          		var d = bombData[i].COUNTRY;
-		          		newData.push(bombData[i]);
-		          	}
-		          }
-		        } else {
-		          // If no boxes are checked, Display no datapoints
-		          newData = [];     
-		        } 
-		       	plotPoints(newData); 
+		      	// //Filter data based on which boxes are checked.
+		       //  if(choices.length > 0){
+		       //    var newData = new Array();
+		       //    for(var i = 0; i < bombData.length; i++){
+		       //    	if(choices.includes(bombData[i].COUNTRY)){
+		       //    		// d is just for debugging
+		       //    		var d = bombData[i].COUNTRY;
+		       //    		newData.push(bombData[i]);
+		       //    	}
+		       //    }
+		       //  } else {
+		       //    // If no boxes are checked, Display no datapoints
+		       //    newData = [];     
+		       //  } 
+		      
       		}
 		
 		</script>
