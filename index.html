@@ -26,55 +26,11 @@
 				width: 800px;
 				margin-left: auto;
 				margin-right: auto;
-				margin-top: 20px;
-				padding: 20px;
+				margin-top: 0px;
+				padding: 10px;
 				background-color: white;
 				box-shadow: 1px 1px 1px 2px rgb(217, 217, 217);
 			}
-			
-			/* style for slider */
-	        .slidecontainer {
-	            width: 100%;
-	        }
-
-	        .slider {
-	            -webkit-appearance: none;
-	            width: 100%;
-	            height: 15px;
-	            border-radius: 5px;
-	            background: #d3d3d3;
-	            outline: none;
-	            opacity: 0.7;
-	            -webkit-transition: .2s;
-	            transition: opacity .2s;
-	        }
-
-	        .slider:hover {
-	            opacity: 1;
-	        }
-
-	        .slider::-webkit-slider-thumb {
-	            -webkit-appearance: none;
-	            appearance: none;
-	            width: 25px;
-	            height: 25px;
-	            border-radius: 50%;
-	            background: #4CAF50;
-	            cursor: pointer;
-	        }
-
-	        .slider::-moz-range-thumb {
-	            width: 25px;
-	            height: 25px;
-	            border-radius: 50%;
-	            background: #4CAF50;
-	            cursor: pointer;
-	        }
-	        
-	        .slider-heading {
-	            font-family: sans-serif; 
-	            margin-top:40px;
-	        }
 
 	        #checkboxes{
 	        	width: 800px;
@@ -114,11 +70,9 @@
 
 	</div>
 		<script type="text/javascript">
-
-			// Dummy comment
 			// Size of SVG
 			var w = 800;
-			var h = 600;
+			var h = 550;
 
 			// Data Structures.
 			var bombData;
@@ -134,8 +88,8 @@
 			//Define map projection
 			var projection = d3.geoMercator()
 									.translate([ w/2, h/2 ])
-								    .scale([w/1]) 
-								    .center([ 12, 51 ]);
+								    .scale([w/0.7]) // default 1  
+								    .center([ 9, 46 ]); // default 12, 51
 								   
 
 			//Define path generator
@@ -173,8 +127,8 @@
 					   .enter()
 					   .append("path")
 					   .attr("d", path)
-					   .attr("stroke", "rgba(8, 81, 156, 0.2)")
-					   .attr("fill", "rgba(2, 2, 2, 0.5)")//"rgba(8, 81, 156, 0.6)")
+					   .attr("stroke", "rgba(2, 2, 2, 0.5)")//"rgba(8, 81, 156, 0.2)")
+					   .attr("fill", "rgba(2, 2, 2, 0.4)")//"rgba(8, 81, 156, 0.6)")
 					   .on('click', function(d){
 		                	console.log("TARGET: " + d.TGTCOUNTRY);
 		                	console.log("COUNTRY: " + d.COUNTRY);
@@ -320,13 +274,7 @@
 				filter.id = "filterHead";
 				filter.appendChild(document.createTextNode("Filter by country:"));
 
-				/* 
-				// Maybe add an "all" button rather than checkbox
-				form.append("input")
-      				.attr("type", "button")
-      				.attr("value", "Add")
-      				.attr("onclick", "printNum(num.value)")
-				*/
+				
 				// Loop through all countries, create a checkbox and label for each and place them in a div container.
 				for (var i = 0; i < countryList.length; i++) {
 					var country = String(countryList[i]);
@@ -354,29 +302,9 @@
 			}
 
 			/*
-				Function updates the dataset filtering based on which boxes are checked.
+				Function updates the visualization based on which boxes are checked.
 			*/
 			function updatePoints(event){
-		        // var choices = [];
-		        // let boxes = d3.selectAll(".checkbox")._groups;
-
-	        	// //"All" Checkbox
-		        // if(boxes[0].item(0).checked){
-		        // 	for(var i = 1; i < boxes[0].length; i++){
-		        // 		boxes[0].item(i).checked = true;
-		        // 	}
-		        // }
-		        // boxes[0].item(0).checked = false;
-
-		        // //Add only the checked boxes to choices
-		        // for(var i = 0; i < boxes[0].length; i++){		          
-		        //   if(boxes[0].item(i).checked){
-		        //     choices.push(boxes[0].item(i).value);
-		        //   }
-		        // }
-
-
-
 		        var countryName = d3.event.target.id.split("_")[0];
 
 		       if(countryName == 'All' && d3.event.target.checked){
@@ -388,24 +316,6 @@
 		       	 d3.selectAll('circle.country-'+countryName).attr('r', d3.event.target.checked ? 3 : 0 );
 		       	 d3.select("#All_Box").property('checked',false);
 		       }
-
-		       
-
-		      
-		      	// //Filter data based on which boxes are checked.
-		       //  if(choices.length > 0){
-		       //    var newData = new Array();
-		       //    for(var i = 0; i < bombData.length; i++){
-		       //    	if(choices.includes(bombData[i].COUNTRY)){
-		       //    		// d is just for debugging
-		       //    		var d = bombData[i].COUNTRY;
-		       //    		newData.push(bombData[i]);
-		       //    	}
-		       //    }
-		       //  } else {
-		       //    // If no boxes are checked, Display no datapoints
-		       //    newData = [];     
-		       //  } 
 		      
       		}
 		
