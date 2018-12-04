@@ -112,12 +112,11 @@
 
 	</div>
 		<script type="text/javascript">
-
-
-
-			//Datastructures
+			// Size of SVG
 			var w = 800;
 			var h = 600;
+
+			// Data Structures.
 			var bombData;
 			d3.csv("BombingData.csv").then(function(d){
 				bombData = d;
@@ -139,7 +138,7 @@
 			var path = d3.geoPath()
 							 .projection(projection);
 
-
+			// Attach zoom function to the graphics container.
 			var attachZoom = d3.zoom().on('zoom', function(d) {
         		d3.select('g').attr('transform', d3.event.transform);
     		})
@@ -151,9 +150,14 @@
 						.attr("height", h)
 						.call(attachZoom);
 
+			// A graphics container to hold the svg.
 			var innerGraphicContainer = svg.append('g');
 			drawMap(innerGraphicContainer);
 
+			/* 
+				Function Draws map from geo.json. 
+				Also calls the checkbox and update functions so the datapoints are drawn on top of the map.
+			*/
 			function drawMap(g){
 				//Load in GeoJSON data
 				map = d3.json("med.custom.geo.json").then(function(json) {
@@ -172,30 +176,36 @@
 		                	console.log("COUNTRY: " + d.COUNTRY);
 		                })
 					    //INTERACT WITH MAP
+					    /*
 		                .on('mouseover', function(d){
 		                	d3.select(this).style("cursor", "pointer"); 
-		                	//d3.select(this).style("fill", "rgba(8, 81, 156, 0.2)");
+		                	d3.select(this).style("fill", "rgba(8, 81, 156, 0.2)");
 		                })
-		               // .on('mouseout', function(d){
-		               // 	d3.select(this).style("fill", "rgba(8, 81, 156, 0.6)");
-		               // })
+		               .on('mouseout', function(d){
+		                	d3.select(this).style("fill", "rgba(8, 81, 156, 0.6)");
+		               })
+		               */
 				        .append('title')
 		                    .text(function(d) {
 		                        return d.properties.name;
 		                });
 
-		            //Plot Points
-		            plotPoints(bombData);
 		            //Create Checkboxes for filtering
 					createCheckboxes(bombData);
-					d3.selectAll(".checkbox").on("change", update);
+					// Plot points based on what boxes are checked
+					updatePoints();
+					d3.selectAll(".checkbox").on("change", updatePoints);
 				});
 				
 			}
 			
+			/*
+				Function displays the datapoints on the map.
+				Handles the Update pattern when called by updatePoints
+			*/
 			function plotPoints(data){	
 					
-					// Display Circle
+					// Get all circles
 			        var circles = innerGraphicContainer.selectAll("circle")
 				        .data(data)
 
@@ -204,6 +214,7 @@
 			            .attr('r', 0)
 			            .remove();
 
+			        // ENTER - Create new cicles
 				    circles.enter()
 				        .append("circle")
 				        .attr("cx", function(d) {
@@ -216,19 +227,7 @@
 				        	return 3;  	
 				        })
 				        .style("fill", function(d){
-				        	switch (d.COUNTRY) {
-							    case "UK":
-							        return "Red";
-							    case "USA":
-							        return "Blue";
-							    case "ITALY":
-							        return "Green";
-							    case "RAF":
-							        return "Black";
-							    default:
-							    	return "White";
-							}
-
+				        	return colorPoints(d);
 				        })
 
 				        //INTERACT WITH DATAPOINTS
@@ -237,38 +236,59 @@
 		                	console.log("COUNTRY: " + d.COUNTRY);
 		                })
 		                .on('mouseover', function(d){
+		                	d3.select(this).style("cursor", "pointer"); 
 		                	d3.select(this).style("r", "10px");
 		                })
 		                .on('mouseout', function(d){
 
 		                	d3.select(this).style("r", "3px")
 		                	.style("fill", function(d){
-					        	switch (d.COUNTRY) {
-								    case "UK":
-								        return "Red";
-								    case "USA":
-								        return "Blue";
-								    case "ITALY":
-								        return "Green";
-								    case "RAF":
-								        return "Black";
-								    default:
-								    	return "White";
-								}
-							})
+		                		return colorPoints(d);
+					        })
 		                })
+
+		                // Add a tool tip to each datapoint
 				        .append('title').text(function(d) {
 		                    	if(d.WEAPONWEIGHT == 0){
-		                    		return d.COUNTRY + " dropped an unknown payload, targeting " + d.TGTCOUNTRY;
+		                    		if(d.TGTCOUNTRY == ""){
+		                    			return d.COUNTRY + " dropped an unknown payload, targeting an unknown country ";
+		                    		}else{
+		                    			return d.COUNTRY + " dropped an unknown payload, targeting " + d.TGTCOUNTRY;
+		                    		}
+		                    	}else if(d.TGTCOUNTRY == ""){
+		                    		return d.COUNTRY + " dropped " + d.WEAPONWEIGHT + " LBS, targeting an unknown country ";
 		                    	}else{
 		                    		return d.COUNTRY + " dropped " + d.WEAPONWEIGHT + " LBS, targeting " + d.TGTCOUNTRY;
 		                    	}
 		                        
 		                });		
 			}
+
+			/*
+				Function returns a color value based on the datapoint's 'COUNTRY' value
+			*/
+			function colorPoints(d){
+				switch (d.COUNTRY) {
+				    case "UK":
+				        return "Red";
+				    case "USA":
+				        return "Blue";
+				    case "ITALY":
+				        return "Green";
+				    case "RAF":
+				        return "Black";
+				    default:
+				    	return "White";
+				}
+			}
 			
 
+			/* 
+				Function creates the checkbox filtering div based on what countries are in the dataset
+				Also creates neccesary formatting DOM objects
+			*/
 			function createCheckboxes(bombData){
+				countrySet.add("All");
 				//Get array of countries for checkboxes
 				for(var i = 0; i < bombData.length; i++){
 					var c = bombData[i].COUNTRY
@@ -281,29 +301,42 @@
 				countrySet.delete("FRANCE");
 				countrySet.forEach(v => countryList.push(v));
 
+				// Create parent div where the checkboxes will live
 				var myDiv = document.getElementById("checkboxes");
+
+				//Create Heading
 				var headDiv = document.getElementById("filterHead");
 				var filter = document.createElement("h3");
 				headDiv.appendChild(filter);
-
 				filter.id = "filterHead";
 				filter.appendChild(document.createTextNode("Filter by country:"));
 
-
+				/* 
+				// Maybe add an "all" button rather than checkbox
+				form.append("input")
+      				.attr("type", "button")
+      				.attr("value", "Add")
+      				.attr("onclick", "printNum(num.value)")
+				*/
+				// Loop through all countries, create a checkbox and label for each and place them in a div container.
 				for (var i = 0; i < countryList.length; i++) {
 					var country = String(countryList[i]);
 
+					// Create checkbox
 				    var checkBox = document.createElement("input");
 				    checkBox.type = "checkbox";
 				    checkBox.value = countryList[i];
 				    checkBox.id = countryList[i] + "_Box";
 				    checkBox.className = "checkbox";
-				    checkBox.checked = true;
+				    // Default value when loading the page
+				    checkBox.checked = false;
 
+				    // Create div container for each checkbox
 				    var checkDiv = document.createElement("div");
 				    checkDiv.className = "checkDiv";
 				    checkDiv.appendChild(checkBox);
 
+				    // Create label for each checkbox
 				    var label = document.createElement("label");
 				    checkDiv.appendChild(label);
 				    myDiv.appendChild(checkDiv);
@@ -311,26 +344,42 @@
 				}
 			}
 
-			function update(){
+			/*
+				Function updates the dataset filtering based on which boxes are checked.
+			*/
+			function updatePoints(){
 		        var choices = [];
 		        let boxes = d3.selectAll(".checkbox")._groups;
 
-		        for(var i = 0; i < boxes[0].length; i++){
-		          
+	        	//"All" Checkbox
+		        if(boxes[0].item(0).checked){
+		        	for(var i = 1; i < boxes[0].length; i++){
+		        		boxes[0].item(i).checked = true;
+		        	}
+		        }
+		        boxes[0].item(0).checked = false;
+
+		        //Add only the checked boxes to choices
+		        for(var i = 0; i < boxes[0].length; i++){		          
 		          if(boxes[0].item(i).checked){
 		            choices.push(boxes[0].item(i).value);
 		          }
 		        }
+
+
 		      
+		      	//Filter data based on which boxes are checked.
 		        if(choices.length > 0){
 		          var newData = new Array();
 		          for(var i = 0; i < bombData.length; i++){
 		          	if(choices.includes(bombData[i].COUNTRY)){
+		          		// d is just for debugging
 		          		var d = bombData[i].COUNTRY;
 		          		newData.push(bombData[i]);
 		          	}
 		          }
 		        } else {
+		          // If no boxes are checked, Display no datapoints
 		          newData = [];     
 		        } 
 		       	plotPoints(newData); 
