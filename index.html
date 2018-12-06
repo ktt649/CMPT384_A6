@@ -58,6 +58,24 @@
     			margin: 0 auto;
 	        }
 
+	        #dataInfo{
+	        	margin-top: auto;
+	        	margin-bottom: auto;
+	        	margin-right: auto;
+	        	margin-left: 0px;
+	        	width: 450px;
+	        	padding: 10px;
+	        }
+
+	        .infoDiv{
+	        	margin-top:5px;
+	        	margin-bottom : 5px;
+	        }
+
+	        h3{
+	        	display:inline;
+	        }
+
 		</style>
 	</head>
 	<body>
@@ -73,7 +91,7 @@
 			<div id = 'checkboxes'></div>
 		</div>
 	</div>
-		<div id = "dataInfo" style = "margin-right: auto">
+		<div id = "dataInfo">
 
 		</div>
 </div>
@@ -241,165 +259,261 @@
 
 				// Print Date
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Date: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.MSNDATE == ""){
-					div.appendChild(document.createTextNode("Date: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Date: " + d.MSNDATE));
+					div.appendChild(document.createTextNode( d.MSNDATE));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
+
 
 				// Print Country
 				var div = document.createElement("div");
-				div.appendChild(document.createTextNode("Attacker: " + d.COUNTRY));
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Attacker: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				div.appendChild(document.createTextNode(d.COUNTRY));
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Target
 				var div = document.createElement("div");
-				div.appendChild(document.createTextNode("Defender: " + d.TGTCOUNTRY));
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Defender: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				div.appendChild(document.createTextNode(d.TGTCOUNTRY));
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Takeoff Location
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Takeoff Location: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.TAKEOFFBASE == ""){
-					div.appendChild(document.createTextNode("Takeoff Location: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Takeoff Location: " + d.TAKEOFFBASE));
+					div.appendChild(document.createTextNode(d.TAKEOFFBASE));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Takeoff Latitude
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Takeoff Latitude: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.TAKEOFFLATITUDE == ""){
-					div.appendChild(document.createTextNode("Takeoff Latitude: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Takeoff Latitude: " + d.TAKEOFFLATITUDE));
+					div.appendChild(document.createTextNode(d.TAKEOFFLATITUDE));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Takeoff Longitude
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Takeoff Longitude: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.TAKEOFFLONGITUDE == ""){
-					div.appendChild(document.createTextNode("Takeoff Longitude: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Takeoff Longitude: " + d.TAKEOFFLONGITUDE));
+					div.appendChild(document.createTextNode(d.TAKEOFFLONGITUDE));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Attacking Unit ID
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Attack Unit ID: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.UNIT == ""){
-					div.appendChild(document.createTextNode("Attack Unit ID: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Attack Unit ID: " + d.UNIT));
+					div.appendChild(document.createTextNode(d.UNIT));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Aircraft Type
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Aircraft Type: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.MDS == ""){
-					div.appendChild(document.createTextNode("Aircraft Type: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Aircraft Type: " + d.MDS));
+					div.appendChild(document.createTextNode(d.MDS));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Number of Attacking Aircraft
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Number of Attack Planes: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.NUMBEROFPLANESATTACKING == ""){
-					div.appendChild(document.createTextNode("Number of Attack Planes: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Number of Attack Planes: " + d.NUMBEROFPLANESATTACKING));
+					div.appendChild(document.createTextNode(d.NUMBEROFPLANESATTACKING));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Takeoff Time
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Takeoff Time: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.TAKEOFFTIME == ""){
-					div.appendChild(document.createTextNode("Takeoff Time: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Takeoff Time: " + d.TAKEOFFTIME));
+					div.appendChild(document.createTextNode(d.TAKEOFFTIME));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Weather Conditions
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Weather Conditions: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.WEATHER == ""){
-					div.appendChild(document.createTextNode("Weather Conditions: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Weather Conditions: " + d.WEATHER));
+					div.appendChild(document.createTextNode(d.WEATHER));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Number of Friendly Casualties
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Number of Friendly Casualties: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.FRIENDLYCASUALTIES == ""){
-					div.appendChild(document.createTextNode("Number of Friendly Casualties: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Number of Friendly Casualties: " + d.FRIENDLYCASUALTIES));
+					div.appendChild(document.createTextNode(d.FRIENDLYCASUALTIES));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Target Type
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Target Country: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.TGTTYPE == ""){
-					div.appendChild(document.createTextNode("Target: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Target: " + d.TGTTYPE));
+					div.appendChild(document.createTextNode(d.TGTTYPE));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Target Location
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Target Location: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.TGTLOCATION == ""){
-					div.appendChild(document.createTextNode("Target Location: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Target Location: " + d.TGTLOCATION));
+					div.appendChild(document.createTextNode(d.TGTLOCATION));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Target Latitude
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Target Latitude: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.LATITUDE == ""){
-					div.appendChild(document.createTextNode("Target Latitude: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Target Latitude: " + d.LATITUDE));
+					div.appendChild(document.createTextNode(d.LATITUDE));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Target Longitude
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Target Longitude: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.LONGITUDE == ""){
-					div.appendChild(document.createTextNode("Target Longitude: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Target Longitude: " + d.LONGITUDE));
+					div.appendChild(document.createTextNode(d.LONGITUDE));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Number of Weapons Expended
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Number of Weapons Expended: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.WEAPONSEXPENDED == ""){
-					div.appendChild(document.createTextNode("Number of Weapons Expended: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Number of Weapons Expended: " + d.WEAPONSEXPENDED));
+					div.appendChild(document.createTextNode(d.WEAPONSEXPENDED));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Weapon Type
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Weapon Type: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.WEAPONTYPE == ""){
-					div.appendChild(document.createTextNode("Weapon Type: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Weapon Type: " + d.WEAPONTYPE));
+					div.appendChild(document.createTextNode(d.WEAPONTYPE));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 				// Print Payload
 				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Payload: ")
+				head.appendChild(txt);
+				div.appendChild(head);
 				if(d.WEAPONWEIGHT == 0){
-					div.appendChild(document.createTextNode("Payload: Unknown"));
+					div.appendChild(document.createTextNode("Unknown"));
 				}else{
-					div.appendChild(document.createTextNode("Payload: " + d.WEAPONWEIGHT + " LBS"));
+					div.appendChild(document.createTextNode(d.WEAPONWEIGHT + " LBS"));
 				}
+				div.className = "infoDiv";
 				container.appendChild(div);
 
 			}
