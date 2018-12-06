@@ -63,12 +63,21 @@
 	<body>
 
 
-	<div id="container">
-		<h1>WWI Bombing Operations</h1>
-
-
-
+<div style = "display: flex">
+	<div style = "margin: auto">
+		<div id="container">
+			<h1>WWI Bombing Operations</h1>
+		</div>
+		<div id = 'filterDiv'>
+			<div id = 'filterHead'></div>
+			<div id = 'checkboxes'></div>
+		</div>
 	</div>
+		<div id = "dataInfo" style = "margin-right: auto">
+			
+		</div>
+</div>
+
 		<script type="text/javascript">
 			// Size of SVG
 			var w = 800;
@@ -194,16 +203,13 @@
 				        })
 
 				        //INTERACT WITH DATAPOINTS
-		                .on('click', function(d){
-		                	console.log("TARGET: " + d.TGTCOUNTRY);
-		                	console.log("COUNTRY: " + d.COUNTRY);
-		                })
+		                .on('click', displayDataPoint)
+
 		                .on('mouseover', function(d){
 		                	d3.select(this).style("cursor", "pointer"); 
 		                	d3.select(this).style("r", "10px");
 		                })
 		                .on('mouseout', function(d){
-
 		                	d3.select(this).style("r", "3px")
 		                	.style("fill", function(d){
 		                		return colorPoints(d);
@@ -225,6 +231,38 @@
 		                    	}
 		                        
 		                });		
+			}
+
+
+			function displayDataPoint(d){
+				document.getElementById("dataInfo").innerHTML = "";
+				// Create parent div to hold text
+				var container = document.getElementById("dataInfo");
+
+				// Print Country
+				//create div
+				var div = document.createElement("div");
+				//add text to div
+				div.appendChild(document.createTextNode("Country: " + d.COUNTRY));
+				//add div to container div
+				container.appendChild(div);
+
+				// Keep repeating this pattern for all info, then we will add style later.
+
+				// Print Target
+				var div = document.createElement("div");
+				div.appendChild(document.createTextNode("Target: " + d.TGTCOUNTRY));
+				container.appendChild(div);
+
+				// Print Payload
+				var div = document.createElement("div");
+				if(d.WEAPONWEIGHT == 0){
+					div.appendChild(document.createTextNode("Payload: Unknown"));
+				}else{
+					div.appendChild(document.createTextNode("Payload: " + d.WEAPONWEIGHT + " LBS"));
+				}
+				
+				container.appendChild(div);
 			}
 
 			/*
@@ -305,25 +343,20 @@
 				Function updates the visualization based on which boxes are checked.
 			*/
 			function updatePoints(event){
-		        var countryName = d3.event.target.id.split("_")[0];
+		       var countryName = d3.event.target.id.split("_")[0];
 
 		       if(countryName == 'All' && d3.event.target.checked){
-		       	//check all the checkboxes
-		       	d3.selectAll('.checkbox').property('checked',true);
-		       	d3.selectAll('circle').attr('r',3 );
+		       		//check all the checkboxes
+		       		d3.selectAll('.checkbox').property('checked',true);
+		       		d3.selectAll('circle').attr('r',3 );
 		       }
 		       else {
-		       	 d3.selectAll('circle.country-'+countryName).attr('r', d3.event.target.checked ? 3 : 0 );
-		       	 d3.select("#All_Box").property('checked',false);
+		       	 	d3.selectAll('circle.country-'+countryName).attr('r', d3.event.target.checked ? 3 : 0 );
+		       	 	d3.select("#All_Box").property('checked',false);
 		       }
 		      
       		}
 		
 		</script>
-    </div>
-    <div id = 'filterDiv'>
-    	<div id = 'filterHead'></div>
-    	<div id = 'checkboxes'></div>
-    </div>
 	</body>
 </html>
