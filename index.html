@@ -233,7 +233,7 @@
 		                });		
 			}
 
-
+			/***************************NEW FUNCTION***************************************/
 			// Function displays info about datapoint in a div beside the map
 			function displayDataPoint(d){
 				document.getElementById("dataInfo").innerHTML = "";
@@ -352,6 +352,7 @@
 		       		d3.selectAll('circle').attr('r',3 );
 		       }
 		       else {
+		       		// hide datapoints
 		       	 	d3.selectAll('circle.country-'+countryName).attr('r', d3.event.target.checked ? 3 : 0 );
 		       	 	d3.select("#All_Box").property('checked',false);
 		       }
