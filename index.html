@@ -3,17 +3,20 @@
 	<head>
 		<meta charset="utf-8">
 		<title>Assignment 6</title>
-		
+
 		<script type="text/javascript" src="d3.v5.min.js"></script>
 		<style type="text/css">
 
 
 			svg {
 				background-color: white;
+				border-style: solid;
+				border-width: 1px;
+				border-color: rgba(112, 112, 112, 0.99);
 			}
 
 			h1 {
-				color: rgb(115, 115, 115);
+				color: rgba(50, 50, 50, 1);
 				font-size: 18px;
 				font-family: sans-serif;
 				font-weight: bold;
@@ -22,63 +25,23 @@
 
 			}
 
-				#container {
+			#container {
 				width: 800px;
 				margin-left: auto;
-				margin-right: auto;
-				margin-top: 20px;
-				padding: 20px;
-				background-color: white;
-				box-shadow: 1px 1px 1px 2px rgb(217, 217, 217);
+				margin-right: 0px;
+				margin-top: 0px;
+				padding: 5px;
+				background-color: rgba(112, 112, 112, 0.39);
+				box-shadow: 1px 1px 0px 2px rgb(217, 217, 217);
+				border-style: solid;
+				border-width: 2px;
+				border-color: rgba(112, 112, 112, 0.99);;
 			}
-			
-			/* style for slider */
-	        .slidecontainer {
-	            width: 100%;
-	        }
-
-	        .slider {
-	            -webkit-appearance: none;
-	            width: 100%;
-	            height: 15px;
-	            border-radius: 5px;
-	            background: #d3d3d3;
-	            outline: none;
-	            opacity: 0.7;
-	            -webkit-transition: .2s;
-	            transition: opacity .2s;
-	        }
-
-	        .slider:hover {
-	            opacity: 1;
-	        }
-
-	        .slider::-webkit-slider-thumb {
-	            -webkit-appearance: none;
-	            appearance: none;
-	            width: 25px;
-	            height: 25px;
-	            border-radius: 50%;
-	            background: #4CAF50;
-	            cursor: pointer;
-	        }
-
-	        .slider::-moz-range-thumb {
-	            width: 25px;
-	            height: 25px;
-	            border-radius: 50%;
-	            background: #4CAF50;
-	            cursor: pointer;
-	        }
-	        
-	        .slider-heading {
-	            font-family: sans-serif; 
-	            margin-top:40px;
-	        }
 
 	        #checkboxes{
 	        	width: 800px;
 	        	padding: 5px;
+	        	padding-right:2px;
     			margin: 0 auto;
     			text-align: center;
     			justify-content: space-between;
@@ -89,6 +52,10 @@
 	        	padding:10px;
 	        }
 
+	        label{
+	        	padding-right: 10px;
+	        }
+
 	        .checkDiv{
 	        	display:inline;
 	        }
@@ -97,28 +64,95 @@
 	        	margin: 3px;
 	        }
 
+
 	        #filterDiv{
 	        	width: 800px;
     			margin: 0 auto;
+    			padding: 5px 5px 0px 5px;
+    			background-color: rgba(112, 112, 112, 0.39);
+			    border-style: solid;
+			    border-width: 0px 2px 2px 2px;
+			    border-color: rgba(112, 112, 112, 0.99);
+			    box-shadow: px 1px 1px 2px rgb(217, 217, 217);
+			}
+
+
+	        #dataInfo{
+	        	margin-right: auto;
+	        	margin-left: 0px;
+	        	width: 450px;
+	        	padding: 10px;
+	        	text-align: center;
+    			padding-top: 50px;
+    			line-height: 23px;
+    			background-color : rgba(112, 112, 112, 0.39);
+				border-style :solid;
+				border-width : 2px;
+				border-color : rgba(112, 112, 112, 0.99);
+				box-shadow : 1px 1px 1px 2px rgb(217, 217, 217);
+				color: rgba(50, 50, 50, 1);
 	        }
+
+	        .infoDiv{
+	        	margin-top:5px;
+	        	margin-bottom : 5px;
+	        }
+
+	        h3{
+	        	display:inline;
+	        }
+
+    svg {
+    font-family: Sans-Serif, Arial;
+    }
+    .line {
+      stroke-width: 2;
+      fill: none;
+    }
+
+    .axis path {
+      stroke: black;
+    }
+
+    .text {
+      font-size: 12px;
+    }
+
+    .title-text {
+      font-size: 12px;
+    }
+
+
 
 		</style>
 	</head>
 	<body>
 
 
-	<div id="container">
-		<h1>WWI Bombing Operations</h1>
-
+<div style = "display: flex">
+	<div style = "margin-left:auto">
+		<div id="container">
+			<h1>WWI Bombing Operations</h1>
+		</div>
+		<div id = 'filterDiv'>
+			<div id = 'filterHead'></div>
+			<div id = 'checkboxes'></div>
+		</div>
+        <div id="chart"></div>
 	</div>
+		<div id = "dataInfo"> Select a Datapoint</div>
+</div>
+
 		<script type="text/javascript">
-
-
-
-			//Datastructures
+			// Size of SVG
 			var w = 800;
-			var h = 600;
+			var h = 550;
+
+			// Data Structures.
 			var bombData;
+			d3.csv("BombingData.csv").then(function(d){
+				bombData = d;
+			});
 			var mapData;
 			var countrySet = new Set();
 			var countryList = new Array();
@@ -128,15 +162,15 @@
 			//Define map projection
 			var projection = d3.geoMercator()
 									.translate([ w/2, h/2 ])
-								    .scale([w/1]) 
-								    .center([ 12, 51 ]);
-								   
+								    .scale([w/0.7]) // default 1
+								    .center([ 9, 46 ]); // default 12, 51
+
 
 			//Define path generator
 			var path = d3.geoPath()
 							 .projection(projection);
 
-
+			// Attach zoom function to the graphics container.
 			var attachZoom = d3.zoom().on('zoom', function(d) {
         		d3.select('g').attr('transform', d3.event.transform);
     		})
@@ -148,13 +182,18 @@
 						.attr("height", h)
 						.call(attachZoom);
 
+			// A graphics container to hold the svg.
 			var innerGraphicContainer = svg.append('g');
 			drawMap(innerGraphicContainer);
 
+			/*
+				Function Draws map from geo.json.
+				Also calls the checkbox and update functions so the datapoints are drawn on top of the map.
+			*/
 			function drawMap(g){
 				//Load in GeoJSON data
 				map = d3.json("med.custom.geo.json").then(function(json) {
-					
+
 					mapData = json
 					//Bind data and create one path per GeoJSON feature
 					g.selectAll("path")
@@ -162,44 +201,57 @@
 					   .enter()
 					   .append("path")
 					   .attr("d", path)
-					   .attr("stroke", "rgba(8, 81, 156, 0.2)")
-					   .attr("fill", "rgba(8, 81, 156, 0.6)")
+					   .attr("stroke", "rgba(2, 2, 2, 0.5)")//"rgba(8, 81, 156, 0.2)")
+					   .attr("fill", "rgba(206, 205, 205, 0.58)")//"rgba(8, 81, 156, 0.6)")
 					   .on('click', function(d){
 		                	console.log("TARGET: " + d.TGTCOUNTRY);
 		                	console.log("COUNTRY: " + d.COUNTRY);
 		                })
 					    //INTERACT WITH MAP
+					    /*
 		                .on('mouseover', function(d){
-		                	d3.select(this).style("cursor", "pointer"); 
-		                	//d3.select(this).style("fill", "rgba(8, 81, 156, 0.2)");
+		                	d3.select(this).style("cursor", "pointer");
+		                	d3.select(this).style("fill", "rgba(8, 81, 156, 0.2)");
 		                })
-		                .on('mouseout', function(d){
+		               .on('mouseout', function(d){
 		                	d3.select(this).style("fill", "rgba(8, 81, 156, 0.6)");
-		                })
+		               })
+		               */
 				        .append('title')
 		                    .text(function(d) {
 		                        return d.properties.name;
 		                });
-		                    
-		            //Plot Points
-		            plotPoints(g);
-				});
-				
-			}
-			
-			function plotPoints(g){
-				//Load in the Bomb run data
-				nodes = d3.csv("BombingData.csv").then(function (data){	
-					bombData = data; 
 
-					//Create Checkboxes for filtering
+		            //Create Checkboxes for filtering
 					createCheckboxes(bombData);
-					
-					
-					// Display Circle
-			        g.selectAll("circle")
-				        .data(bombData)
-				        .enter()
+					// show all the points
+					plotPoints(bombData);
+					//draw invisible lines representing each bombing route
+					drawBombingRoute(bombData);
+					// attaching event handler to checkboxes
+					d3.selectAll(".checkbox").on("change", updatePoints);
+				});
+
+			}
+
+			/*
+				Function displays the datapoints on the map.
+				Handles the Update pattern when called by updatePoints
+			*/
+			function plotPoints(data){
+
+					// Get all circles
+			        var circles = innerGraphicContainer.selectAll("circle")
+				        .data(data)
+
+
+
+			        // ENTER - Create new cicles
+				    circles.enter()
+				    	.filter(function(d){
+				        	return (['UK','USA','ITALY','RAF'].indexOf(d.COUNTRY) > -1) && !!d.LONGITUDE && !!d.LATITUDE;
+
+				        })
 				        .append("circle")
 				        .attr("cx", function(d) {
 				            return projection([d.LONGITUDE, d.LATITUDE])[0];
@@ -208,33 +260,424 @@
 				            return projection([d.LONGITUDE, d.LATITUDE])[1];
 				        })
 				        .attr("r", function(d){
-				          	return 2;
+									if(d.LATITUDE != "" && d.LATITUDE != 0) {
+				        		return 3;
+									}
+									else {
+										return 0;
+									}
 				        })
-				        .style("fill", "Black")
+				        .style("fill", function(d){
+				        	return colorPoints(d);
+				        })
+				        .attr('class',function(d){
+				        	return 'country-'+d.COUNTRY;
+				        })
+				        .attr('id', function(d){
+				        	return d.WWI_ID+"_circle";
+				        })
 
 				        //INTERACT WITH DATAPOINTS
-		                .on('click', function(d){
-		                	console.log("TARGET: " + d.TGTCOUNTRY);
-		                	console.log("COUNTRY: " + d.COUNTRY);
-		                })
+		                .on('click', function(d) {
+							displayDataPoint(d);
+						})
+						.on('click', showRoute)
+
 		                .on('mouseover', function(d){
-		                	d3.select(this).style("fill", "Red");
+		                	d3.select(this).style("cursor", "pointer");
+		                	d3.select(this).attr("r", function(d) {
+												return 10 + d.WEAPONWEIGHT/500;
+											});
 		                })
 		                .on('mouseout', function(d){
-		                	d3.select(this).style("fill", "Black");
+		                	d3.select(this).attr("r", "3")
+		                	.style("fill", function(d){
+		                		return colorPoints(d);
+					        })
 		                })
+
+		                // Add a tool tip to each datapoint
 				        .append('title').text(function(d) {
 		                    	if(d.WEAPONWEIGHT == 0){
-		                    		return d.COUNTRY + " dropped an unknown payload, targeting " + d.TGTCOUNTRY;
+		                    		if(d.TGTCOUNTRY == ""){
+		                    			return d.COUNTRY + " dropped an unknown payload, targeting an unknown country ";
+		                    		}else{
+		                    			return d.COUNTRY + " dropped an unknown payload, targeting " + d.TGTCOUNTRY;
+		                    		}
+		                    	}else if(d.TGTCOUNTRY == ""){
+		                    		return d.COUNTRY + " dropped " + d.WEAPONWEIGHT + " LBS, targeting an unknown country ";
 		                    	}else{
 		                    		return d.COUNTRY + " dropped " + d.WEAPONWEIGHT + " LBS, targeting " + d.TGTCOUNTRY;
 		                    	}
-		                        
-		                });		
-				});
+
+		                });
 			}
 
+			// Function draws all bombing routes
+			function drawBombingRoute(d){
+				//Create the edges
+		        var lines = innerGraphicContainer.selectAll("line")
+		        	.data(d)
+
+		        	lines.enter()
+		        	.append("line")
+		        	.attr("x1", function(d){
+								if(d.TAKEOFFLATITUDE != "" && d.TAKEOFFLONGITUDE != ""){
+		        			return projection([d.TAKEOFFLONGITUDE, d.TAKEOFFLATITUDE])[0];
+								}
+								else {
+									return projection([d.LONGITUDE, d.LATITUDE])[0];
+								}
+		        	})
+		        	.attr("y1", function(d){
+								if(d.TAKEOFFLATITUDE != "" && d.TAKEOFFLONGITUDE != ""){
+		 							return projection([d.TAKEOFFLONGITUDE, d.TAKEOFFLATITUDE])[1];
+								}
+								else {
+									return projection([d.LONGITUDE, d.LATITUDE])[1];
+								}
+		        	})
+		        	.attr("x2", function(d){
+		        			return projection([d.LONGITUDE, d.LATITUDE])[0];
+		        	})
+		        	.attr("y2", function(d){
+		        			return projection([d.LONGITUDE, d.LATITUDE])[1];
+		        	})
+		        	.attr("id", function(d){
+		        		return d.WWI_ID+"_line";
+		        	})
+		        	.attr("stroke", "purple")
+							.style("stroke-dasharray", ("3, 3"))
+							.style("stroke-width", 0)
+							.style('opacity', function(d) {
+								if(d.LATITUDE != "" && d.LATITUDE != 0) {
+									return .5;
+								}
+								else {
+									return 0;
+								}
+							})
+		        	.append('title')
+	                    .text(function(d) {
+	                        return d.COUNTRY + " --> " + d.TGTCOUNTRY;
+	                });
+            }
+
+            //Function shows only the bombing route assosicated with the datapoint you clicked on.
+            function showRoute(event){
+            	   d3.selectAll("line").style('stroke-width', 0);
+	               var id = d3.event.target.id.split("_")[0];
+	               var lineID = id+"_line";
+	               document.getElementById(lineID).style.strokeWidth = 3;
+	               displayDataPoint(event);
+            }
+
+
+
+			//Function displays more info about the selected datapoint
+			function displayDataPoint(d){
+				document.getElementById("dataInfo").innerHTML = "";
+				// Create parent div to hold text
+				var container = document.getElementById("dataInfo");
+
+				// Print Date
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Date: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.MSNDATE == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode( d.MSNDATE));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+
+				// Print Country
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Attacker: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				div.appendChild(document.createTextNode(d.COUNTRY));
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Target
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Defender: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				div.appendChild(document.createTextNode(d.TGTCOUNTRY));
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Takeoff Location
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Takeoff Location: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.TAKEOFFBASE == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.TAKEOFFBASE));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Takeoff Latitude
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Takeoff Latitude: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.TAKEOFFLATITUDE == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.TAKEOFFLATITUDE));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Takeoff Longitude
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Takeoff Longitude: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.TAKEOFFLONGITUDE == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.TAKEOFFLONGITUDE));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Attacking Unit ID
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Attack Unit ID: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.UNIT == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.UNIT));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Aircraft Type
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Aircraft Type: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.MDS == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.MDS));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Number of Attacking Aircraft
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Number of Attack Planes: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.NUMBEROFPLANESATTACKING == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.NUMBEROFPLANESATTACKING));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Takeoff Time
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Takeoff Time: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.TAKEOFFTIME == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.TAKEOFFTIME));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Weather Conditions
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Weather Conditions: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.WEATHER == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.WEATHER));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Number of Friendly Casualties
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Number of Friendly Casualties: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.FRIENDLYCASUALTIES == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.FRIENDLYCASUALTIES));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Target Type
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Target: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.TGTTYPE == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.TGTTYPE));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Target Location
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Target Location: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.TGTLOCATION == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.TGTLOCATION));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Target Latitude
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Target Latitude: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.LATITUDE == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.LATITUDE));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Target Longitude
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Target Longitude: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.LONGITUDE == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.LONGITUDE));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Number of Weapons Expended
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Number of Weapons Expended: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.WEAPONSEXPENDED == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.WEAPONSEXPENDED));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Weapon Type
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Weapon Type: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.WEAPONTYPE == ""){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.WEAPONTYPE));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+				// Print Payload
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Payload: ")
+				head.appendChild(txt);
+				div.appendChild(head);
+				if(d.WEAPONWEIGHT == 0){
+					div.appendChild(document.createTextNode("Unknown"));
+				}else{
+					div.appendChild(document.createTextNode(d.WEAPONWEIGHT + " LBS"));
+				}
+				div.className = "infoDiv";
+				container.appendChild(div);
+
+
+				var div = document.createElement("div");
+				var head =document.createElement("h3");
+				var txt = document.createTextNode("Bombing Route Shown As: --------------")
+				div.className = "dash";
+				head.appendChild(txt);
+				div.appendChild(head);
+				container.appendChild(div);
+			}
+
+
+
+
+
+			/*
+				Function returns a color value based on the datapoint's 'COUNTRY' value
+			*/
+			function colorPoints(d){
+				switch (d.COUNTRY) {
+				    case "UK":
+				        return "rgb(195, 6, 0)";
+				    case "USA":
+				        return "rgba(1, 1, 202, 0.86)";
+				    case "ITALY":
+				        return "rgba(1, 101, 1, 0.83)";
+				    case "RAF":
+				        return "Black";
+				    default:
+				    	return "transparent";
+				}
+			}
+
+
+			/*
+				Function creates the checkbox filtering div based on what countries are in the dataset
+				Also creates neccesary formatting DOM objects
+			*/
 			function createCheckboxes(bombData){
+				countrySet.add("All");
 				//Get array of countries for checkboxes
 				for(var i = 0; i < bombData.length; i++){
 					var c = bombData[i].COUNTRY
@@ -243,37 +686,66 @@
 					}
 				}
 
+				//France has no location data so is meaningless to the vis.
+				countrySet.delete("FRANCE");
 				countrySet.forEach(v => countryList.push(v));
 
+				// Create parent div where the checkboxes will live
 				var myDiv = document.getElementById("checkboxes");
+
+				//Create Heading
 				var headDiv = document.getElementById("filterHead");
 				var filter = document.createElement("h3");
 				headDiv.appendChild(filter);
-
 				filter.id = "filterHead";
 				filter.appendChild(document.createTextNode("Filter by country:"));
 
 
+				// Loop through all countries, create a checkbox and label for each and place them in a div container.
 				for (var i = 0; i < countryList.length; i++) {
+					var country = String(countryList[i]);
+
+					// Create checkbox
 				    var checkBox = document.createElement("input");
-				   // checkbox.id = countryList[i];
+				    checkBox.type = "checkbox";
+				    checkBox.value = countryList[i];
+				    checkBox.id = countryList[i] + "_Box";
+				    checkBox.className = "checkbox";
+				    // Default value when loading the page
+				    checkBox.checked = true;
+
+				    // Create div container for each checkbox
 				    var checkDiv = document.createElement("div");
 				    checkDiv.className = "checkDiv";
 				    checkDiv.appendChild(checkBox);
+
+				    // Create label for each checkbox
 				    var label = document.createElement("label");
-				    checkBox.type = "checkbox";
-				    checkBox.value = countryList[i];
 				    checkDiv.appendChild(label);
 				    myDiv.appendChild(checkDiv);
-				    label.appendChild(document.createTextNode(countryList[i]));    
+				    label.appendChild(document.createTextNode(countryList[i]));
 				}
 			}
-		
+
+			/*
+				Function updates the visualization based on which boxes are checked.
+			*/
+			function updatePoints(event){
+		       var countryName = d3.event.target.id.split("_")[0];
+
+		       if(countryName == 'All' && d3.event.target.checked){
+		       		//check all the checkboxes
+		       		d3.selectAll('.checkbox').property('checked',true);
+		       		d3.selectAll('circle').attr('r',3 );
+		       }
+		       else {
+		       	 	d3.selectAll('circle.country-'+countryName).attr('r', d3.event.target.checked ? 3 : 0 );
+		       	 	d3.select("#All_Box").property('checked',false);
+		       }
+
+      		}
+
 		</script>
-    </div>
-    <div id = 'filterDiv'>
-    	<div id = 'filterHead'></div>
-    	<div id = 'checkboxes'></div>
-    </div>
+		<script type="text/javascript" src="time.js"></script>
 	</body>
 </html>
