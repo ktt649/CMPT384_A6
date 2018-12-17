@@ -102,25 +102,25 @@
 	        	display:inline;
 	        }
 
-		    svg {
-		    font-family: Sans-Serif, Arial;
-		    }
-		    .line {
-		      stroke-width: 2;
-		      fill: none;
-		    }
+    svg {
+    font-family: Sans-Serif, Arial;
+    }
+    .line {
+      stroke-width: 2;
+      fill: none;
+    }
 
-		    .axis path {
-		      stroke: black;
-		    }
+    .axis path {
+      stroke: black;
+    }
 
-		    .text {
-		      font-size: 12px;
-		    }
+    .text {
+      font-size: 12px;
+    }
 
-		    .title-text {
-		      font-size: 12px;
-		    }
+    .title-text {
+      font-size: 12px;
+    }
 
 
 
@@ -138,6 +138,7 @@
 			<div id = 'filterHead'></div>
 			<div id = 'checkboxes'></div>
 		</div>
+        <div id="chart"></div>
 	</div>
 		<div id = "dataInfo"> Select a Datapoint</div>
 </div>
@@ -278,13 +279,15 @@
 
 				        //INTERACT WITH DATAPOINTS
 		                .on('click', function(d) {
-							displayDataPoint(d);					
+							displayDataPoint(d);
 						})
 						.on('click', showRoute)
 
 		                .on('mouseover', function(d){
 		                	d3.select(this).style("cursor", "pointer");
-		                	d3.select(this).attr("r", "10");
+		                	d3.select(this).attr("r", function(d) {
+												return 10 + d.WEAPONWEIGHT/500;
+											});
 		                })
 		                .on('mouseout', function(d){
 		                	d3.select(this).attr("r", "3")
@@ -358,7 +361,7 @@
 	                    .text(function(d) {
 	                        return d.COUNTRY + " --> " + d.TGTCOUNTRY;
 	                });
-            } 
+            }
 
             //Function shows only the bombing route assosicated with the datapoint you clicked on.
             function showRoute(event){
@@ -743,7 +746,6 @@
       		}
 
 		</script>
-		<div id="chart"></div>
 		<script type="text/javascript" src="time.js"></script>
 	</body>
 </html>
