@@ -52,7 +52,36 @@
 	        	padding:10px;
 	        }
 
+	        .checkbox{
+	       		width: 28px;
+			    height: 28px;
+			    /*filter: invert(100%) hue-rotate(18deg) brightness(1.7);*/
+	        }
+
+	        #UK_Box{
+	        	filter: invert(100%) hue-rotate(-36deg) brightness(1);
+	        }
+
+	        #USA_Box{
+	        	filter: invert(131%) hue-rotate(190deg) brightness(0.7);
+	        }
+
+	        #ITALY_Box{
+	        	filter: invert(100%) hue-rotate(85deg) brightness(0.7);
+	        }
+
+	        #RAF_Box{
+	        	filter: invert(100%) hue-rotate(18deg) brightness(1.7);
+	        }
+
+	        #All_Box{
+	        	filter: invert(100%) hue-rotate(204deg) brightness(3);
+	        }
+	        
+
 	        label{
+			    cursor: pointer;
+			    z-index: 1;
 	        	padding-right: 10px;
 	        }
 
@@ -647,10 +676,8 @@
 				head.appendChild(txt);
 				div.appendChild(head);
 				container.appendChild(div);
+
 			}
-
-
-
 
 
 			/*
@@ -659,13 +686,13 @@
 			function colorPoints(d){
 				switch (d.COUNTRY) {
 				    case "UK":
-				        return "rgb(195, 6, 0)";
+				        return "rgb(226, 119, 97)";
 				    case "USA":
-				        return "rgba(1, 1, 202, 0.86)";
+				        return "rgb(48, 102, 172)";
 				    case "ITALY":
-				        return "rgba(1, 101, 1, 0.83)";
+				        return "rgb(67, 104, 22)";
 				    case "RAF":
-				        return "Black";
+				        return "rgb(241, 215, 69)";
 				    default:
 				    	return "transparent";
 				}
@@ -711,6 +738,7 @@
 				    checkBox.value = countryList[i];
 				    checkBox.id = countryList[i] + "_Box";
 				    checkBox.className = "checkbox";
+				    
 				    // Default value when loading the page
 				    checkBox.checked = true;
 
@@ -746,6 +774,6 @@
       		}
 
 		</script>
-		<script type="text/javascript" src="time.js"></script>
+		<!--<script type="text/javascript" src="time.js"></script>-->
 	</body>
 </html>
